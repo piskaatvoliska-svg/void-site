@@ -4,7 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#07080d">
-  <title>VOID — Rust utility</title>
+  <meta name="description" content="VOID — технологичный клиент для Rust с быстрым запуском и чистым интерфейсом.">
+  <title>VOID — Control the game</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap');
 
@@ -12,6 +13,8 @@
     * { box-sizing:border-box; }
     html { scroll-behavior:smooth; }
     body { margin:0; min-height:100vh; overflow-x:hidden; color:var(--text); background:var(--bg); font-family:Inter, sans-serif; }
+    ::selection { color:#fff; background:rgba(124,58,237,.7); }
+    .cursor-glow { position:fixed; left:0; top:0; width:360px; height:360px; z-index:1; border-radius:50%; pointer-events:none; background:radial-gradient(circle,rgba(124,58,237,.10),transparent 68%); transform:translate(-50%,-50%); transition:opacity .3s; }
     body::before { content:""; position:fixed; inset:0; pointer-events:none; opacity:.25; z-index:10; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.12'/%3E%3C/svg%3E"); }
     .orb { position:fixed; width:460px; height:460px; border-radius:50%; filter:blur(100px); opacity:.18; pointer-events:none; animation:drift 10s ease-in-out infinite alternate; }
     .orb.one { top:-170px; left:-120px; background:var(--violet); }
@@ -42,12 +45,19 @@
     .download:hover::after { transform:translateX(110%) skewX(-18deg); }
     .more { display:inline-flex; align-items:center; padding:17px 22px; border:1px solid var(--line); border-radius:13px; background:rgba(255,255,255,.04); transition:.25s; }
     .more:hover { background:rgba(255,255,255,.08); }
+    .button:focus-visible,.login:focus-visible { outline:2px solid #a78bfa; outline-offset:4px; }
+    .build-info { display:flex; flex-wrap:wrap; align-items:center; gap:8px 16px; margin-top:22px; color:#747789; font-size:11px; font-weight:600; letter-spacing:.07em; text-transform:uppercase; animation:rise .7s .4s both; }
+    .build-info span { display:flex; align-items:center; gap:7px; }
+    .build-info span::before { content:""; width:4px; height:4px; border-radius:50%; background:#5b5e70; }
+    .build-info span:first-child::before { background:#8b5cf6; box-shadow:0 0 9px #8b5cf6; }
     @keyframes rise { from { opacity:0; transform:translateY(22px); } to { opacity:1; transform:none; } }
 
     .visual { position:relative; animation:rise .9s .2s both; }
     .panel { position:relative; min-height:490px; padding:22px; border:1px solid var(--line); border-radius:25px; background:linear-gradient(145deg,rgba(25,27,40,.82),rgba(10,11,17,.6)); box-shadow:0 35px 100px rgba(0,0,0,.38); backdrop-filter:blur(18px); transform:perspective(1000px) rotateY(-6deg) rotateX(3deg); transition:.35s; overflow:hidden; }
     .panel:hover { transform:perspective(1000px) rotateY(-2deg) rotateX(1deg) translateY(-5px); }
-    .panel::before { content:""; position:absolute; width:250px; height:250px; border-radius:50%; top:70px; right:70px; background:rgba(124,58,237,.22); filter:blur(65px); }
+    .panel::before { content:""; position:absolute; width:250px; height:250px; border-radius:50%; top:var(--light-y,70px); right:var(--light-x,70px); background:rgba(124,58,237,.22); filter:blur(65px); transition:.2s; }
+    .panel::after { content:""; position:absolute; left:0; right:0; top:-25%; height:80px; pointer-events:none; background:linear-gradient(transparent,rgba(139,92,246,.07),transparent); animation:scan 5s linear infinite; }
+    @keyframes scan { to { top:115%; } }
     .panel-top { display:flex; justify-content:space-between; align-items:center; color:#727586; font-size:12px; letter-spacing:.12em; text-transform:uppercase; }
     .dots { display:flex; gap:6px; } .dots i { width:7px; height:7px; border-radius:50%; background:#333644; } .dots i:first-child { background:#8b5cf6; }
     .crosshair { width:220px; height:220px; margin:65px auto 35px; display:grid; place-items:center; position:relative; border:1px solid rgba(139,92,246,.13); border-radius:50%; box-shadow:0 0 0 35px rgba(139,92,246,.035),0 0 0 70px rgba(139,92,246,.018); }
@@ -59,19 +69,22 @@
     .metrics { display:grid; grid-template-columns:repeat(3,1fr); gap:9px; }
     .metric { padding:13px; border:1px solid rgba(255,255,255,.065); border-radius:12px; background:rgba(255,255,255,.025); }
     .metric b { display:block; font:600 17px 'Space Grotesk'; } .metric span { color:#737687; font-size:10px; text-transform:uppercase; letter-spacing:.1em; }
+    .build-tag { position:absolute; right:22px; bottom:102px; color:#56596a; font:600 9px/1 'Space Grotesk'; letter-spacing:.16em; }
     .toast { position:fixed; left:50%; bottom:25px; z-index:30; padding:13px 18px; border:1px solid var(--line); border-radius:12px; background:#151722; box-shadow:0 18px 50px #0008; opacity:0; transform:translate(-50%,20px); pointer-events:none; transition:.3s; font-size:13px; }
     .toast.show { opacity:1; transform:translate(-50%,0); }
     @media (max-width:850px) { .status { display:none; } main { grid-template-columns:1fr; padding-top:75px; } .visual { max-width:520px; width:100%; margin:auto; } h1 { font-size:clamp(50px,15vw,76px); } }
-    @media (max-width:520px) { nav,main { width:min(100% - 28px,1180px); } .login span:last-child { display:none; } .actions { flex-direction:column; } .download,.more { justify-content:center; } .panel { min-height:420px; } .crosshair { width:170px; height:170px; margin-top:55px; } }
+    @media (max-width:520px) { nav,main { width:min(100% - 28px,1180px); } .login span:last-child { display:none; } .actions { flex-direction:column; } .download,.more { justify-content:center; } .build-info { justify-content:center; } .panel { min-height:420px; } .crosshair { width:170px; height:170px; margin-top:55px; } }
+    @media (prefers-reduced-motion:reduce) { *,*::before,*::after { animation-duration:.01ms!important; animation-iteration-count:1!important; scroll-behavior:auto!important; } .cursor-glow { display:none; } }
   </style>
 </head>
 <body>
+  <div class="cursor-glow" id="cursorGlow"></div>
   <div class="orb one"></div><div class="orb two"></div>
   <nav>
     <div class="logo"><div class="logo-mark"><span>V</span></div>VOID</div>
     <div class="nav-right">
       <div class="status">Система работает</div>
-      <button class="login" id="login"><span class="google">G</span><span>Войти через Google</span></button>
+      <button class="login" id="login" type="button"><span class="google">G</span><span>Войти через Google</span></button>
     </div>
   </nav>
   <main>
@@ -80,14 +93,18 @@
       <h1>CONTROL<br><span>THE GAME.</span></h1>
       <p class="lead">Технологичный инструмент для Rust с чистым интерфейсом, стабильной работой и быстрым запуском. Всё необходимое — без лишнего шума.</p>
       <div class="actions">
-        <a class="button download" href="../кнопка.cpp/кнопка.exe" download="кнопка.exe" id="download">Скачать клиент <span>↓</span></a>
+        <a class="button download" href="./void-client.exe" download="VOID-client.exe" id="download">Скачать клиент <span>↓</span></a>
         <a class="button more" href="#details">Подробнее</a>
+      </div>
+      <div class="build-info" aria-label="Информация о сборке">
+        <span>Windows 10/11</span><span>x64</span><span>89 KB</span><span>Build 1.0.0</span>
       </div>
     </section>
     <section class="visual" id="details">
       <div class="panel">
         <div class="panel-top"><span>VOID / CONTROL PANEL</span><div class="dots"><i></i><i></i><i></i></div></div>
         <div class="crosshair"><div class="core"></div></div>
+        <div class="build-tag">ENCRYPTED INTERFACE / 01</div>
         <div class="metrics">
           <div class="metric"><b>64 BIT</b><span>Architecture</span></div>
           <div class="metric"><b>1.0 MS</b><span>Response</span></div>
@@ -100,8 +117,61 @@
   <script>
     const toast = document.querySelector('#toast');
     const notify = text => { toast.textContent = text; toast.classList.add('show'); clearTimeout(window.toastTimer); window.toastTimer = setTimeout(() => toast.classList.remove('show'), 2800); };
-    document.querySelector('#download').addEventListener('click', () => notify('Загрузка началась'));
+    const download = document.querySelector('#download');
+    const originalDownloadText = download.innerHTML;
+    download.addEventListener('click', async event => {
+      // При локальном открытии браузер скачивает настоящий файл рядом с HTML.
+      if (location.protocol === 'file:') {
+        notify('VOID-client.exe отправлен в загрузки');
+        return;
+      }
+
+      // На опубликованном сайте сначала проверяем, что файл действительно
+      // загружен рядом с index.html, и только после этого начинаем скачивание.
+      event.preventDefault();
+      if (download.dataset.loading === 'true') return;
+      download.dataset.loading = 'true';
+      download.setAttribute('aria-busy', 'true');
+      download.innerHTML = 'Подготовка файла <span>•••</span>';
+
+      try {
+        const response = await fetch('./void-client.exe', { cache: 'no-store' });
+        if (!response.ok) throw new Error('Файл клиента не найден');
+        const fileBlob = await response.blob();
+
+        const fileUrl = URL.createObjectURL(fileBlob);
+        const temporaryLink = document.createElement('a');
+        temporaryLink.href = fileUrl;
+        temporaryLink.download = 'VOID-client.exe';
+        document.body.appendChild(temporaryLink);
+        temporaryLink.click();
+        temporaryLink.remove();
+        setTimeout(() => URL.revokeObjectURL(fileUrl), 1500);
+        download.innerHTML = 'Загрузка началась <span>✓</span>';
+        notify('VOID-client.exe отправлен в загрузки');
+      } catch (error) {
+        download.innerHTML = 'Повторить загрузку <span>↻</span>';
+        notify('Не удалось подготовить файл. Попробуй ещё раз');
+      } finally {
+        setTimeout(() => {
+          download.innerHTML = originalDownloadText;
+          download.dataset.loading = 'false';
+          download.removeAttribute('aria-busy');
+        }, 2400);
+      }
+    });
     document.querySelector('#login').addEventListener('click', () => notify('Google OAuth подключим после получения Client ID'));
+    const glow = document.querySelector('#cursorGlow');
+    window.addEventListener('pointermove', event => {
+      glow.style.left = `${event.clientX}px`;
+      glow.style.top = `${event.clientY}px`;
+    });
+    const panel = document.querySelector('.panel');
+    panel.addEventListener('pointermove', event => {
+      const rect = panel.getBoundingClientRect();
+      panel.style.setProperty('--light-x', `${rect.right - event.clientX - 125}px`);
+      panel.style.setProperty('--light-y', `${event.clientY - rect.top - 125}px`);
+    });
   </script>
 </body>
 </html>
