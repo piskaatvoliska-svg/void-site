@@ -1,177 +1,86 @@
 <!doctype html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#07080d">
-  <meta name="description" content="VOID — технологичный клиент для Rust с быстрым запуском и чистым интерфейсом.">
-  <title>VOID — Control the game</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#09080d">
+  <meta name="description" content="Majestic Legal Helper — офлайн-помощник по законодательной базе Memphis для гос. сотрудников и адвокатов Majestic RP.">
+  <title>Majestic Legal Helper — Memphis</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap');
-
-    :root { --bg:#07080d; --card:rgba(18,20,30,.68); --line:rgba(255,255,255,.09); --text:#f7f7fb; --muted:#9699a8; --violet:#8b5cf6; --cyan:#38bdf8; }
-    * { box-sizing:border-box; }
-    html { scroll-behavior:smooth; }
-    body { margin:0; min-height:100vh; overflow-x:hidden; color:var(--text); background:var(--bg); font-family:Inter, sans-serif; }
-    ::selection { color:#fff; background:rgba(124,58,237,.7); }
-    .cursor-glow { position:fixed; left:0; top:0; width:360px; height:360px; z-index:1; border-radius:50%; pointer-events:none; background:radial-gradient(circle,rgba(124,58,237,.10),transparent 68%); transform:translate(-50%,-50%); transition:opacity .3s; }
-    body::before { content:""; position:fixed; inset:0; pointer-events:none; opacity:.25; z-index:10; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.12'/%3E%3C/svg%3E"); }
-    .orb { position:fixed; width:460px; height:460px; border-radius:50%; filter:blur(100px); opacity:.18; pointer-events:none; animation:drift 10s ease-in-out infinite alternate; }
-    .orb.one { top:-170px; left:-120px; background:var(--violet); }
-    .orb.two { right:-180px; bottom:-180px; background:var(--cyan); animation-delay:-4s; }
-    @keyframes drift { to { transform:translate(60px, 45px) scale(1.12); } }
-
-    nav { width:min(1180px, calc(100% - 40px)); height:84px; margin:auto; display:flex; align-items:center; justify-content:space-between; position:relative; z-index:20; }
-    .logo { display:flex; align-items:center; gap:11px; font:700 20px/1 'Space Grotesk'; letter-spacing:.16em; }
-    .logo-mark { width:31px; height:31px; display:grid; place-items:center; border:1px solid rgba(139,92,246,.65); background:rgba(139,92,246,.12); transform:rotate(45deg); box-shadow:0 0 28px rgba(139,92,246,.25); }
-    .logo-mark span { transform:rotate(-45deg); color:#c4b5fd; }
-    .nav-right { display:flex; align-items:center; gap:22px; }
-    .status { color:var(--muted); font-size:13px; display:flex; align-items:center; gap:8px; }
-    .status::before { content:""; width:7px; height:7px; border-radius:50%; background:#4ade80; box-shadow:0 0 12px #4ade80; }
-    button, .button { border:0; color:inherit; font:600 14px/1 Inter; cursor:pointer; text-decoration:none; }
-    .login { display:flex; align-items:center; gap:10px; padding:10px 15px; border:1px solid var(--line); border-radius:11px; background:rgba(255,255,255,.055); transition:.25s; }
-    .login:hover { transform:translateY(-2px); background:rgba(255,255,255,.1); border-color:rgba(255,255,255,.18); }
-    .google { width:18px; height:18px; border-radius:50%; display:grid; place-items:center; background:#fff; color:#4285f4; font:bold 12px Arial; }
-
-    main { width:min(1180px, calc(100% - 40px)); margin:auto; min-height:calc(100vh - 84px); display:grid; grid-template-columns:1.1fr .9fr; align-items:center; gap:70px; padding:55px 0 90px; position:relative; z-index:2; }
-    .eyebrow { width:max-content; padding:8px 12px; border-radius:99px; border:1px solid rgba(139,92,246,.25); color:#c4b5fd; background:rgba(139,92,246,.08); font-size:12px; font-weight:700; letter-spacing:.13em; text-transform:uppercase; animation:rise .7s both; }
-    h1 { margin:24px 0 20px; max-width:760px; font:700 clamp(54px,7vw,92px)/.92 'Space Grotesk'; letter-spacing:-.06em; animation:rise .7s .1s both; }
-    h1 span { color:transparent; -webkit-text-stroke:1px rgba(255,255,255,.55); }
-    .lead { max-width:590px; margin:0; color:var(--muted); font-size:17px; line-height:1.75; animation:rise .7s .2s both; }
-    .actions { display:flex; gap:13px; margin-top:34px; animation:rise .7s .3s both; }
-    .download { position:relative; overflow:hidden; display:inline-flex; align-items:center; gap:11px; padding:17px 24px; border-radius:13px; color:#fff; background:linear-gradient(135deg, #7c3aed, #4f46e5); box-shadow:0 15px 50px rgba(99,102,241,.28); transition:.25s; }
-    .download::after { content:""; position:absolute; inset:-2px; transform:translateX(-110%) skewX(-18deg); background:linear-gradient(90deg,transparent,rgba(255,255,255,.32),transparent); transition:.55s; }
-    .download:hover { transform:translateY(-3px); box-shadow:0 20px 60px rgba(99,102,241,.4); }
-    .download:hover::after { transform:translateX(110%) skewX(-18deg); }
-    .more { display:inline-flex; align-items:center; padding:17px 22px; border:1px solid var(--line); border-radius:13px; background:rgba(255,255,255,.04); transition:.25s; }
-    .more:hover { background:rgba(255,255,255,.08); }
-    .button:focus-visible,.login:focus-visible { outline:2px solid #a78bfa; outline-offset:4px; }
-    .build-info { display:flex; flex-wrap:wrap; align-items:center; gap:8px 16px; margin-top:22px; color:#747789; font-size:11px; font-weight:600; letter-spacing:.07em; text-transform:uppercase; animation:rise .7s .4s both; }
-    .build-info span { display:flex; align-items:center; gap:7px; }
-    .build-info span::before { content:""; width:4px; height:4px; border-radius:50%; background:#5b5e70; }
-    .build-info span:first-child::before { background:#8b5cf6; box-shadow:0 0 9px #8b5cf6; }
-    @keyframes rise { from { opacity:0; transform:translateY(22px); } to { opacity:1; transform:none; } }
-
-    .visual { position:relative; animation:rise .9s .2s both; }
-    .panel { position:relative; min-height:490px; padding:22px; border:1px solid var(--line); border-radius:25px; background:linear-gradient(145deg,rgba(25,27,40,.82),rgba(10,11,17,.6)); box-shadow:0 35px 100px rgba(0,0,0,.38); backdrop-filter:blur(18px); transform:perspective(1000px) rotateY(-6deg) rotateX(3deg); transition:.35s; overflow:hidden; }
-    .panel:hover { transform:perspective(1000px) rotateY(-2deg) rotateX(1deg) translateY(-5px); }
-    .panel::before { content:""; position:absolute; width:250px; height:250px; border-radius:50%; top:var(--light-y,70px); right:var(--light-x,70px); background:rgba(124,58,237,.22); filter:blur(65px); transition:.2s; }
-    .panel::after { content:""; position:absolute; left:0; right:0; top:-25%; height:80px; pointer-events:none; background:linear-gradient(transparent,rgba(139,92,246,.07),transparent); animation:scan 5s linear infinite; }
-    @keyframes scan { to { top:115%; } }
-    .panel-top { display:flex; justify-content:space-between; align-items:center; color:#727586; font-size:12px; letter-spacing:.12em; text-transform:uppercase; }
-    .dots { display:flex; gap:6px; } .dots i { width:7px; height:7px; border-radius:50%; background:#333644; } .dots i:first-child { background:#8b5cf6; }
-    .crosshair { width:220px; height:220px; margin:65px auto 35px; display:grid; place-items:center; position:relative; border:1px solid rgba(139,92,246,.13); border-radius:50%; box-shadow:0 0 0 35px rgba(139,92,246,.035),0 0 0 70px rgba(139,92,246,.018); }
-    .crosshair::before,.crosshair::after { content:""; position:absolute; background:linear-gradient(90deg,transparent,#8b5cf6,transparent); }
-    .crosshair::before { width:280px; height:1px; } .crosshair::after { height:280px; width:1px; background:linear-gradient(transparent,#8b5cf6,transparent); }
-    .core { width:58px; height:58px; border:1px solid rgba(139,92,246,.7); transform:rotate(45deg); display:grid; place-items:center; animation:pulse 2.2s infinite; }
-    .core::after { content:""; width:9px; height:9px; border-radius:50%; background:#a78bfa; box-shadow:0 0 24px #8b5cf6; }
-    @keyframes pulse { 50% { box-shadow:0 0 40px rgba(139,92,246,.38); transform:rotate(135deg) scale(1.08); } }
-    .metrics { display:grid; grid-template-columns:repeat(3,1fr); gap:9px; }
-    .metric { padding:13px; border:1px solid rgba(255,255,255,.065); border-radius:12px; background:rgba(255,255,255,.025); }
-    .metric b { display:block; font:600 17px 'Space Grotesk'; } .metric span { color:#737687; font-size:10px; text-transform:uppercase; letter-spacing:.1em; }
-    .build-tag { position:absolute; right:22px; bottom:102px; color:#56596a; font:600 9px/1 'Space Grotesk'; letter-spacing:.16em; }
-    .toast { position:fixed; left:50%; bottom:25px; z-index:30; padding:13px 18px; border:1px solid var(--line); border-radius:12px; background:#151722; box-shadow:0 18px 50px #0008; opacity:0; transform:translate(-50%,20px); pointer-events:none; transition:.3s; font-size:13px; }
-    .toast.show { opacity:1; transform:translate(-50%,0); }
-    @media (max-width:850px) { .status { display:none; } main { grid-template-columns:1fr; padding-top:75px; } .visual { max-width:520px; width:100%; margin:auto; } h1 { font-size:clamp(50px,15vw,76px); } }
-    @media (max-width:520px) { nav,main { width:min(100% - 28px,1180px); } .login span:last-child { display:none; } .actions { flex-direction:column; } .download,.more { justify-content:center; } .build-info { justify-content:center; } .panel { min-height:420px; } .crosshair { width:170px; height:170px; margin-top:55px; } }
-    @media (prefers-reduced-motion:reduce) { *,*::before,*::after { animation-duration:.01ms!important; animation-iteration-count:1!important; scroll-behavior:auto!important; } .cursor-glow { display:none; } }
+    @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@600;700;800&display=swap");
+    :root{--bg:#09080d;--panel:rgba(20,19,27,.72);--panel2:rgba(12,11,17,.76);--line:rgba(255,255,255,.09);--text:#f8f6fa;--muted:#aaa5b2;--pink:#ff0878;--pink2:#a9004f;--green:#42e8aa;--amber:#ffbd4a}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;min-width:320px;color:var(--text);background:var(--bg);font-family:Inter,sans-serif;overflow-x:hidden}
+    body:before{content:"";position:fixed;inset:0;pointer-events:none;background:radial-gradient(circle at 14% 8%,rgba(255,8,120,.15),transparent 28%),radial-gradient(circle at 88% 55%,rgba(111,0,54,.14),transparent 30%),linear-gradient(rgba(255,255,255,.018) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.018) 1px,transparent 1px);background-size:auto,auto,42px 42px,42px 42px}
+    a{color:inherit}.wrap{width:min(1160px,calc(100% - 40px));margin:auto;position:relative;z-index:1}
+    nav{height:82px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line)}
+    .brand{display:flex;align-items:center;gap:12px;font:800 15px Manrope,Inter,sans-serif;letter-spacing:.04em}.mark{width:38px;height:38px;display:grid;place-items:center;border:1px solid rgba(255,8,120,.55);background:linear-gradient(145deg,rgba(255,8,120,.26),rgba(255,8,120,.05));border-radius:11px;box-shadow:0 0 30px rgba(255,8,120,.12);font-size:19px}.brand small{display:block;margin-top:3px;color:var(--pink);font:700 10px Inter,sans-serif;letter-spacing:.13em}.navlink{color:var(--muted);font-size:13px;text-decoration:none}.navlink:hover{color:#fff}
+    .hero{min-height:670px;display:grid;grid-template-columns:1.03fr .97fr;gap:72px;align-items:center;padding:70px 0 85px}.tag{display:inline-flex;gap:8px;align-items:center;padding:8px 12px;border:1px solid rgba(255,8,120,.25);border-radius:99px;background:rgba(255,8,120,.07);color:#ff6aaa;font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase}.tag i,.online i{width:6px;height:6px;border-radius:50%;background:var(--pink);box-shadow:0 0 12px var(--pink)}
+    h1{margin:23px 0 18px;font:800 clamp(48px,6.3vw,78px)/.98 Manrope,Inter,sans-serif;letter-spacing:-.055em}.accent{color:var(--pink)}.lead{max-width:640px;margin:0;color:var(--muted);font-size:17px;line-height:1.7}.actions{display:flex;gap:12px;margin-top:31px}.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:52px;padding:0 20px;border:1px solid var(--line);border-radius:12px;text-decoration:none;font-size:14px;font-weight:800;transition:.2s}.primary{border-color:#f50874;background:linear-gradient(135deg,#f50874,#b70055);box-shadow:0 18px 50px rgba(255,8,120,.22)}.primary:hover{transform:translateY(-2px);box-shadow:0 22px 60px rgba(255,8,120,.34)}.secondary{background:rgba(255,255,255,.035)}.secondary:hover{background:rgba(255,255,255,.07)}
+    .facts{display:flex;flex-wrap:wrap;gap:9px 20px;margin-top:20px;color:#817b89;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em}.facts span:before{content:"";display:inline-block;width:4px;height:4px;margin:0 8px 2px 0;border-radius:50%;background:var(--pink)}
+    .app{position:relative;padding:20px;border:1px solid var(--line);border-radius:24px;background:linear-gradient(145deg,rgba(26,23,32,.88),rgba(10,9,14,.78));box-shadow:0 35px 100px rgba(0,0,0,.52);backdrop-filter:blur(22px);transform:perspective(1000px) rotateY(-4deg);transition:.3s}.app:hover{transform:perspective(1000px) rotateY(-1deg) translateY(-4px)}.app:after{content:"";position:absolute;inset:-1px;border-radius:24px;pointer-events:none;background:linear-gradient(125deg,rgba(255,8,120,.27),transparent 25%);mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);mask-composite:exclude;padding:1px}
+    .appbar{display:flex;align-items:center;justify-content:space-between;padding-bottom:15px;border-bottom:1px solid var(--line)}.appbrand{font-size:11px;font-weight:800;letter-spacing:.08em}.online{display:flex;align-items:center;gap:7px;color:var(--green);font-size:9px;font-weight:800}.online i{background:var(--green);box-shadow:0 0 10px var(--green)}
+    .modes{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:16px 0}.mode{padding:10px 12px;border:1px solid var(--line);border-radius:9px;background:#17151d;color:#8f8997;font-size:10px;font-weight:800;text-align:center}.mode.active{border-color:rgba(255,8,120,.55);background:rgba(255,8,120,.15);color:#fff}
+    .chat{min-height:305px;padding:16px;border:1px solid rgba(255,255,255,.06);border-radius:13px;background:rgba(5,5,8,.48)}.who{margin-bottom:9px;color:var(--pink);font-size:9px;font-weight:800;letter-spacing:.1em}.bubble{margin-bottom:13px;padding:12px 13px;border-radius:10px;background:#1b1920;color:#d9d5dc;font-size:11px;line-height:1.55}.bubble strong{display:block;margin-bottom:5px;color:#fff}.bubble.answer{border-left:2px solid var(--pink)}.law{margin-top:8px;color:#f0edf2}.law b{color:#fff}.say{margin-top:10px;padding:9px 10px;border-radius:8px;background:rgba(255,8,120,.09);color:#ff6aaa;font-weight:700}.input{display:flex;gap:8px;margin-top:10px}.input span{flex:1;padding:11px;border:1px solid var(--line);border-radius:9px;color:#6f6975;font-size:10px}.mic{width:38px;display:grid;place-items:center;border-radius:9px;background:rgba(255,8,120,.15);color:#ff4b9e}
+    section.block{padding:90px 0}.section-head{max-width:700px;margin-bottom:34px}.kicker{color:var(--pink);font-size:11px;font-weight:800;letter-spacing:.13em;text-transform:uppercase}.section-head h2{margin:11px 0 9px;font:800 clamp(31px,4vw,46px)/1.08 Manrope,Inter,sans-serif;letter-spacing:-.035em}.section-head p{margin:0;color:var(--muted);line-height:1.65}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.card{min-height:190px;padding:23px;border:1px solid var(--line);border-radius:17px;background:var(--panel)}.icon{width:38px;height:38px;display:grid;place-items:center;margin-bottom:22px;border-radius:10px;background:rgba(255,8,120,.12);color:#ff5ba5;font-weight:800}.card h3{margin:0 0 9px;font:800 16px Manrope,Inter,sans-serif}.card p{margin:0;color:var(--muted);font-size:13px;line-height:1.65}
+    .download-box{display:grid;grid-template-columns:1fr auto;align-items:center;gap:30px;padding:34px;border:1px solid rgba(255,8,120,.28);border-radius:20px;background:linear-gradient(120deg,rgba(255,8,120,.1),rgba(18,16,23,.75))}.download-box h2{margin:0 0 8px;font:800 29px Manrope,Inter,sans-serif}.download-box p{margin:0;color:var(--muted);line-height:1.6}.fine{margin-top:12px;color:#77717e;font-size:11px}footer{padding:33px 0 45px;border-top:1px solid var(--line);color:#706a77;font-size:11px;display:flex;justify-content:space-between;gap:20px}
+    @media(max-width:860px){.hero{grid-template-columns:1fr;gap:48px}.app{max-width:570px;margin:auto;transform:none}.grid{grid-template-columns:1fr 1fr}.download-box{grid-template-columns:1fr}.download-box .btn{width:max-content}}@media(max-width:560px){.wrap{width:min(100% - 26px,1160px)}nav{height:70px}.navlink{display:none}.hero{padding:55px 0 65px;min-height:0}.actions{flex-direction:column}.grid{grid-template-columns:1fr}.app{padding:13px}.download-box{padding:24px}.download-box .btn{width:100%}footer{flex-direction:column}.facts{gap:8px}.lead{font-size:15px}}
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.app,.primary{transition:none}}
   </style>
 </head>
 <body>
-  <div class="cursor-glow" id="cursorGlow"></div>
-  <div class="orb one"></div><div class="orb two"></div>
-  <nav>
-    <div class="logo"><div class="logo-mark"><span>V</span></div>VOID</div>
-    <div class="nav-right">
-      <div class="status">Система работает</div>
-      <button class="login" id="login" type="button"><span class="google">G</span><span>Войти через Google</span></button>
-    </div>
-  </nav>
-  <main>
-    <section>
-      <div class="eyebrow">Новая версия · v1.0</div>
-      <h1>CONTROL<br><span>THE GAME.</span></h1>
-      <p class="lead">Технологичный инструмент для Rust с чистым интерфейсом, стабильной работой и быстрым запуском. Всё необходимое — без лишнего шума.</p>
-      <div class="actions">
-        <a class="button download" href="./void-client.exe" download="VOID-client.exe" id="download">Скачать клиент <span>↓</span></a>
-        <a class="button more" href="#details">Подробнее</a>
-      </div>
-      <div class="build-info" aria-label="Информация о сборке">
-        <span>Windows 10/11</span><span>x64</span><span>89 KB</span><span>Build 1.0.0</span>
-      </div>
-    </section>
-    <section class="visual" id="details">
-      <div class="panel">
-        <div class="panel-top"><span>VOID / CONTROL PANEL</span><div class="dots"><i></i><i></i><i></i></div></div>
-        <div class="crosshair"><div class="core"></div></div>
-        <div class="build-tag">ENCRYPTED INTERFACE / 01</div>
-        <div class="metrics">
-          <div class="metric"><b>64 BIT</b><span>Architecture</span></div>
-          <div class="metric"><b>1.0 MS</b><span>Response</span></div>
-          <div class="metric"><b>ONLINE</b><span>Status</span></div>
+  <div class="wrap">
+    <nav>
+      <div class="brand"><div class="mark">M</div><div>MAJESTIC LEGAL HELPER<small>MEMPHIS · НАТИВНОЕ ПРИЛОЖЕНИЕ</small></div></div>
+      <a class="navlink" href="#features">Возможности</a>
+    </nav>
+    <main class="hero">
+      <section>
+        <div class="tag"><i></i> Полная база Memphis уже внутри</div>
+        <h1>Душни по<br><span class="accent">законке.</span> Быстро.</h1>
+        <p class="lead">Офлайн-хелпер для Majestic Role Play. Понимает обычную речь, находит подходящие статьи и примечания, разделяет действия госника и нарушение задержанного — без шаблонной воды.</p>
+        <div class="actions">
+          <a class="btn primary" id="download" href="https://github.com/piskaatvoliska-svg/void-site/releases/latest/download/Majestic-Legal-Helper.zip">Скачать для Windows <span>↓</span></a>
+          <a class="btn secondary" href="#features">Что умеет</a>
         </div>
-      </div>
-    </section>
-  </main>
-  <div class="toast" id="toast"></div>
-  <script>
-    const toast = document.querySelector('#toast');
-    const notify = text => { toast.textContent = text; toast.classList.add('show'); clearTimeout(window.toastTimer); window.toastTimer = setTimeout(() => toast.classList.remove('show'), 2800); };
-    const download = document.querySelector('#download');
-    const originalDownloadText = download.innerHTML;
-    download.addEventListener('click', async event => {
-      // При локальном открытии браузер скачивает настоящий файл рядом с HTML.
-      if (location.protocol === 'file:') {
-        notify('VOID-client.exe отправлен в загрузки');
-        return;
-      }
+        <div class="facts"><span>Один EXE</span><span>Windows 10/11 x64</span><span>Без установки</span><span>Голосовой ввод</span></div>
+      </section>
+      <section class="app" aria-label="Предпросмотр приложения">
+        <div class="appbar"><div class="appbrand">MAJESTIC LEGAL HELPER</div><div class="online"><i></i> БАЗА MEMPHIS</div></div>
+        <div class="modes"><div class="mode active">ГОС. СОТРУДНИК</div><div class="mode">АДВОКАТ</div></div>
+        <div class="chat">
+          <div class="who">ТЫ</div>
+          <div class="bubble">Чел напал на меня с нелегальным оружием. Что ему вменить?</div>
+          <div class="who">LEGAL HELPER</div>
+          <div class="bubble answer">
+            <strong>Сначала уточню один момент</strong>
+            Он только направил оружие или успел выстрелить по тебе?
+            <div class="law"><b>После ответа:</b> подберу статьи за нападение, оружие и сопутствующие нарушения — отдельно от норм, разрешающих тебе применить силу.</div>
+            <div class="say">СКАЖИ ЧЕЛОВЕКУ: готовая короткая RP-фраза появится здесь.</div>
+          </div>
+        </div>
+        <div class="input"><span>Спроси своими словами…</span><div class="mic">◉</div></div>
+      </section>
+    </main>
+  </div>
 
-      // На опубликованном сайте сначала проверяем, что файл действительно
-      // загружен рядом с index.html, и только после этого начинаем скачивание.
-      event.preventDefault();
-      if (download.dataset.loading === 'true') return;
-      download.dataset.loading = 'true';
-      download.setAttribute('aria-busy', 'true');
-      download.innerHTML = 'Подготовка файла <span>•••</span>';
+  <section class="block" id="features"><div class="wrap">
+    <div class="section-head"><div class="kicker">Не просто поиск по словам</div><h2>Понимает, кто что сделал</h2><p>Хелпер собирает цепочку событий, уточняет недостающие факты и только потом показывает применимые нормы.</p></div>
+    <div class="grid">
+      <article class="card"><div class="icon">01</div><h3>Госник или адвокат</h3><p>Ответ строится с позиции выбранной роли. Не смешивает полномочия сотрудника с обвинением задержанного.</p></article>
+      <article class="card"><div class="icon">02</div><h3>Точные статьи</h3><p>Показывает номер жирным, короткую расшифровку, санкцию и примечания. Может связать несколько норм.</p></article>
+      <article class="card"><div class="icon">03</div><h3>Нормальная речь</h3><p>Понимает игровой сленг, опечатки и голос. Если фактов мало — задаёт конкретный уточняющий вопрос.</p></article>
+      <article class="card"><div class="icon">04</div><h3>Два уровня ответа</h3><p>«Новичок» объясняет действия по шагам. «Душнила» проверяет полную юридическую цепочку и исключения.</p></article>
+      <article class="card"><div class="icon">05</div><h3>Полностью офлайн</h3><p>База, поиск и распознавание работают на компьютере. Ничего отдельно загружать в приложение не нужно.</p></article>
+      <article class="card"><div class="icon">06</div><h3>Готовая RP-фраза</h3><p>В конце — короткий красный блок с тем, что сказать задержанному, водителю или сотруднику прямо в игре.</p></article>
+    </div>
+  </div></section>
 
-      try {
-        const response = await fetch('./void-client.exe', { cache: 'no-store' });
-        if (!response.ok) throw new Error('Файл клиента не найден');
-        const fileBlob = await response.blob();
-
-        const fileUrl = URL.createObjectURL(fileBlob);
-        const temporaryLink = document.createElement('a');
-        temporaryLink.href = fileUrl;
-        temporaryLink.download = 'VOID-client.exe';
-        document.body.appendChild(temporaryLink);
-        temporaryLink.click();
-        temporaryLink.remove();
-        setTimeout(() => URL.revokeObjectURL(fileUrl), 1500);
-        download.innerHTML = 'Загрузка началась <span>✓</span>';
-        notify('VOID-client.exe отправлен в загрузки');
-      } catch (error) {
-        download.innerHTML = 'Повторить загрузку <span>↻</span>';
-        notify('Не удалось подготовить файл. Попробуй ещё раз');
-      } finally {
-        setTimeout(() => {
-          download.innerHTML = originalDownloadText;
-          download.dataset.loading = 'false';
-          download.removeAttribute('aria-busy');
-        }, 2400);
-      }
-    });
-    document.querySelector('#login').addEventListener('click', () => notify('Google OAuth подключим после получения Client ID'));
-    const glow = document.querySelector('#cursorGlow');
-    window.addEventListener('pointermove', event => {
-      glow.style.left = `${event.clientX}px`;
-      glow.style.top = `${event.clientY}px`;
-    });
-    const panel = document.querySelector('.panel');
-    panel.addEventListener('pointermove', event => {
-      const rect = panel.getBoundingClientRect();
-      panel.style.setProperty('--light-x', `${rect.right - event.clientX - 125}px`);
-      panel.style.setProperty('--light-y', `${event.clientY - rect.top - 125}px`);
-    });
-  </script>
+  <section class="block"><div class="wrap">
+    <div class="download-box">
+      <div><h2>Скачал — запустил — работаешь</h2><p>В архиве находится готовый Majestic Legal Helper. Распакуй папку и открой приложение.</p><div class="fine">Проект создан для ролевой игры Majestic RP и не является юридической консультацией в реальной жизни.</div></div>
+      <a class="btn primary" href="https://github.com/piskaatvoliska-svg/void-site/releases/latest/download/Majestic-Legal-Helper.zip">Скачать хелпер ↓</a>
+    </div>
+  </section>
+  <div class="wrap"><footer><span>© 2026 Majestic Legal Helper</span><span>Memphis · Windows x64</span></footer></div>
 </body>
 </html>
