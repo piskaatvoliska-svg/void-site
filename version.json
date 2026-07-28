@@ -1,6 +1,6 @@
 {
-  "version": "4.24.0",
+  "version": "4.25.0",
   "url": "https://piskaatvoliska-svg.github.io/void-site/",
-  "download": "https://github.com/piskaatvoliska-svg/void-site/releases/download/v4.24.0/Majestic-Legal-Helper.zip",
-  "notes": "Добавлена интерактивная схема memphis-court: 39 судебных шаблонов, 48 узлов и 46 связей. В окне документов можно выбрать судебную ветку и увидеть только подходящие определения и решения."
+  "download": "https://github.com/piskaatvoliska-svg/void-site/releases/download/v4.25.0/Majestic-Legal-Helper.zip",
+  "notes": "Встроены 2414 публичных шаблонов Docossum из 131 раздела на 19 серверах Majestic. В документах появился выбор сервера и организации; Memphis остаётся выбран по умолчанию."
 }
