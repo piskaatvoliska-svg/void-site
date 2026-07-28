@@ -1,6 +1,6 @@
 {
-  "version": "4.25.1",
+  "version": "4.26.0",
   "url": "https://piskaatvoliska-svg.github.io/void-site/",
-  "download": "https://github.com/piskaatvoliska-svg/void-site/releases/download/v4.25.1/Majestic-Legal-Helper.zip",
-  "notes": "Проверены 40 актуальных разделов законов Memphis без дублей. В базу входят уставы SANG, FIB, EMS, USSS, правительства, LSPD, LSCSD и Weazel News; добавлена защита от их потери при обновлении."
+  "download": "https://github.com/piskaatvoliska-svg/void-site/releases/download/v4.26.0/Majestic-Legal-Helper.zip",
+  "notes": "Исправлен голосовой ввод на разных компьютерах: автоматическая нормализация звука для Whisper, выбор микрофона по ПКМ, сохранение набранного текста, уведомления при скрытом окне и понятная диагностика тишины."
 }
