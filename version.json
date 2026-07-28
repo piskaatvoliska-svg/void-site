@@ -1,6 +1,6 @@
 {
-  "version": "4.25.0",
+  "version": "4.25.1",
   "url": "https://piskaatvoliska-svg.github.io/void-site/",
-  "download": "https://github.com/piskaatvoliska-svg/void-site/releases/download/v4.25.0/Majestic-Legal-Helper.zip",
-  "notes": "Встроены 2414 публичных шаблонов Docossum из 131 раздела на 19 серверах Majestic. В документах появился выбор сервера и организации; Memphis остаётся выбран по умолчанию."
+  "download": "https://github.com/piskaatvoliska-svg/void-site/releases/download/v4.25.1/Majestic-Legal-Helper.zip",
+  "notes": "Проверены 40 актуальных разделов законов Memphis без дублей. В базу входят уставы SANG, FIB, EMS, USSS, правительства, LSPD, LSCSD и Weazel News; добавлена защита от их потери при обновлении."
 }
