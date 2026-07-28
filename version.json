@@ -1,6 +1,6 @@
 {
-  "version": "5.1.0",
+  "version": "5.1.1",
   "url": "https://piskaatvoliska-svg.github.io/void-site/",
-  "download": "https://github.com/piskaatvoliska-svg/void-site/releases/download/v5.1.0/Majestic-Legal-Helper.zip",
-  "notes": "Добавлены встроенные законы всех 19 серверов Majestic. Выбор сервера переключает поисковую базу, каталог законов и документы; ничего отдельно загружать не нужно."
+  "download": "https://github.com/piskaatvoliska-svg/void-site/releases/download/v5.1.1/Majestic-Legal-Helper.zip",
+  "notes": "Терминология приведена к Majestic: в ответах используется АК — Административный кодекс. Старые запросы «КоАП» тоже распознаются, но вывод всегда показывает АК."
 }
