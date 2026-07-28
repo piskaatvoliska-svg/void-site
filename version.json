@@ -1,6 +1,6 @@
 {
-  "version": "4.23.0",
+  "version": "4.24.0",
   "url": "https://piskaatvoliska-svg.github.io/void-site/",
-  "download": "https://github.com/piskaatvoliska-svg/void-site/releases/download/v4.23.0/Majestic-Legal-Helper.zip",
-  "notes": "Добавлена памятка Docossum Memphis: 68 коротких записей УК/КоАП и процессуальные шпаргалки. Официальные нормы остаются главным источником, а порядок и основания задержания объясняются отдельными понятными списками."
+  "download": "https://github.com/piskaatvoliska-svg/void-site/releases/download/v4.24.0/Majestic-Legal-Helper.zip",
+  "notes": "Добавлена интерактивная схема memphis-court: 39 судебных шаблонов, 48 узлов и 46 связей. В окне документов можно выбрать судебную ветку и увидеть только подходящие определения и решения."
 }
