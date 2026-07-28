@@ -1,6 +1,6 @@
 {
-  "version": "4.26.0",
+  "version": "5.0.0",
   "url": "https://piskaatvoliska-svg.github.io/void-site/",
-  "download": "https://github.com/piskaatvoliska-svg/void-site/releases/download/v4.26.0/Majestic-Legal-Helper.zip",
-  "notes": "Исправлен голосовой ввод на разных компьютерах: автоматическая нормализация звука для Whisper, выбор микрофона по ПКМ, сохранение набранного текста, уведомления при скрытом окне и понятная диагностика тишины."
+  "download": "https://github.com/piskaatvoliska-svg/void-site/releases/download/v5.0.0/Majestic-Legal-Helper.zip",
+  "notes": "Крупное обновление: новый смысловой разбор ситуаций, точные запросы статей без случайных подмен, короткие санкции без дублей, отдельный офлайн-каталог законов и расширенные проверки искажённой речи."
 }
