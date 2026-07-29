@@ -1,6 +1,6 @@
 {
-  "version": "5.1.2",
+  "version": "5.1.3",
   "url": "https://piskaatvoliska-svg.github.io/void-site/",
-  "download": "https://github.com/piskaatvoliska-svg/void-site/releases/download/v5.1.2/Majestic-Legal-Helper.zip",
-  "notes": "Внутренняя логика поиска не изменена. Только в готовом ответе обозначение «КоАП» автоматически заменяется на принятое в Majestic «АК»."
+  "download": "https://github.com/piskaatvoliska-svg/void-site/releases/download/v5.1.3/Majestic-Legal-Helper.zip",
+  "notes": "Исправлена роль госника: выбранная кнопка теперь учитывается без повторения «я сотрудник» в вопросе. Фраза «в меня стреляли» правильно ведёт к ст. 17.1 УК, а не к полномочиям и процедуре."
 }
