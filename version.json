@@ -1,6 +1,6 @@
 {
-  "version": "5.8.0",
+  "version": "5.8.1",
   "url": "https://piskaatvoliska-svg.github.io/void-site/",
-  "download": "https://github.com/piskaatvoliska-svg/void-site/releases/download/v5.8.0/Majestic-Legal-Helper.zip",
-  "notes": "Исправлен общий смысловой поиск: точные действия важнее совпадений слов. Обновлены УК/ДК/АК, адвокатская ветка, применение силы и RP-фразы. Штрафные статьи больше не объявляют автоматическое задержание."
+  "download": "https://github.com/piskaatvoliska-svg/void-site/releases/download/v5.8.1/Majestic-Legal-Helper.zip",
+  "notes": "Исправлен репорт №2: новые ситуации больше не наследуют старое оружие, документы и препятствование уточняются отдельно, а проникновение на запретную/ФЗ территорию распознаётся как ст. 12.7 УК."
 }
