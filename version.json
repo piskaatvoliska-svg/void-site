@@ -1,6 +1,6 @@
 {
-  "version": "5.2.1",
+  "version": "5.8.0",
   "url": "https://piskaatvoliska-svg.github.io/void-site/",
-  "download": "https://github.com/piskaatvoliska-svg/void-site/releases/download/v5.2.1/Majestic-Legal-Helper.zip",
-  "notes": "В настройках облачного ИИ добавлена кнопка создания API-ключа, ведущая на официальную страницу OpenAI."
+  "download": "https://github.com/piskaatvoliska-svg/void-site/releases/download/v5.8.0/Majestic-Legal-Helper.zip",
+  "notes": "Исправлен общий смысловой поиск: точные действия важнее совпадений слов. Обновлены УК/ДК/АК, адвокатская ветка, применение силы и RP-фразы. Штрафные статьи больше не объявляют автоматическое задержание."
 }
