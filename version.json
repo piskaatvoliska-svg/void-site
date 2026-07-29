@@ -1,6 +1,6 @@
 {
-  "version": "5.1.5",
+  "version": "5.2.0",
   "url": "https://piskaatvoliska-svg.github.io/void-site/",
-  "download": "https://github.com/piskaatvoliska-svg/void-site/releases/download/v5.1.5/Majestic-Legal-Helper.zip",
-  "notes": "Полностью заменена база Memphis по обновлению форума: 39 актуальных документов с обеих страниц, включая Конституцию, ПК, УК, АК, ДК, приложение территорий, отраслевые законы и уставы."
+  "download": "https://github.com/piskaatvoliska-svg/void-site/releases/download/v5.2.0/Majestic-Legal-Helper.zip",
+  "notes": "Обновлённая законка Memphis и новый необязательный облачный ИИ: понимает свободную речь, выбирает только из встроенных точных норм и сохраняет офлайн-режим."
 }
