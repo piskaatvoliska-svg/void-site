@@ -1,6 +1,6 @@
 {
-  "version": "5.2.0",
+  "version": "5.2.1",
   "url": "https://piskaatvoliska-svg.github.io/void-site/",
-  "download": "https://github.com/piskaatvoliska-svg/void-site/releases/download/v5.2.0/Majestic-Legal-Helper.zip",
-  "notes": "Обновлённая законка Memphis и новый необязательный облачный ИИ: понимает свободную речь, выбирает только из встроенных точных норм и сохраняет офлайн-режим."
+  "download": "https://github.com/piskaatvoliska-svg/void-site/releases/download/v5.2.1/Majestic-Legal-Helper.zip",
+  "notes": "В настройках облачного ИИ добавлена кнопка создания API-ключа, ведущая на официальную страницу OpenAI."
 }
